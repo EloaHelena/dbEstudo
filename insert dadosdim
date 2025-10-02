@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS #BASE
+SELECT DISTINCT 
+	A.[Tipo_Atendimento]
+INTO #BASE
+FROM [dbEstudo].[Historico].[HistCallCenter] A
+
+MERGE [dbEstudo].[DataMart].[DimAtendimento] AS DESTINO
+USING #BASE AS ORIGEM
+	ON (
+		DESTINO.[Tipo_Atendimento] = ORIGEM.[Tipo_Atendimento]
+		)
+		
+	WHEN NOT MATCHED THEN
+
+			INSERT(
+					[Tipo_Atendimento]
+					)
+			VALUES(
+					ORIGEM.[Tipo_Atendimento]
+					);
