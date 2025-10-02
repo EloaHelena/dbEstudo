@@ -1,0 +1,27 @@
+--exec PrcDimCliente
+
+CREATE OR ALTER PROCEDURE PrcDimCliente AS
+DROP TABLE IF EXISTS #BASE
+SELECT DISTINCT 
+  A.Nome_Cliente
+ ,[Numero_Cliente]	= max(A.Numero_Cliente)
+INTO #BASE
+FROM [dbEstudo].[Historico].[HistCallCenter] A
+GROUP BY A.Nome_Cliente
+
+-- TRUNCATE TABLE [dbEstudo].[DataMart].[DimCliente]
+MERGE [dbEstudo].[DataMart].[DimCliente] as DESTINO
+USING #BASE AS ORIGEM
+	ON (
+		DESTINO.Nome_Cliente = ORIGEM.Nome_Cliente
+		)
+	WHEN NOT MATCHED THEN 
+
+			INSERT(
+					 Nome_Cliente
+					,Numero_Cliente
+					)
+			VALUES(
+					 ORIGEM.Nome_Cliente
+					,ORIGEM.Numero_Cliente
+				);
