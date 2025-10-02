@@ -1,0 +1,85 @@
+DROP TABLE IF EXISTS #BASE
+
+SELECT 
+	[ID_Chamada]							
+      ,[Numero_Cliente]						
+      ,[Nome_Cliente]
+      ,[Data_Hora_Inicio]					= TRY_CONVERT (DATETIME,[Data_Hora_Inicio],120)
+      ,[Hora_Inicio_Fila]					= TRY_CONVERT (DATETIME,[Hora_Inicio_Fila],120)
+	  ,[Hora_Inicio_Atendimento]			= TRY_CONVERT (DATETIME,[Hora_Inicio_Atendimento],120)
+      ,[Hora_Fim_Chamada]					= TRY_CONVERT (DATETIME,[Hora_Fim_Chamada],120)
+      ,[Hora_Fim_Atendimento]				= TRY_CONVERT (DATETIME,[Hora_Fim_Atendimento],120)
+	  ,[Tipo_Atendimento]					
+      ,[Duracao_Chamada_Segundos]			= CONVERT (INT,[Duracao_Chamada_Segundos])
+	  ,[Tempo_Pos_Atendimento_Segundos]		= CONVERT(INT,CONVERT (FLOAT,[Tempo_Pos_Atendimento_Segundos]))	
+	  ,[ID_Agente]
+	  ,[Nome_Agente]				
+      ,[ID_Supervisor]						
+      ,[Nome_Supervisor]					
+      ,[Status_Chamada]						
+      ,[Canal_Origem]						
+      ,[Motivo_Contato]						
+      ,[Resolucao_Primeiro_Contato]			
+      ,[CSAT]								= CONVERT(INT,TRY_CONVERT(FLOAT,[CSAT])	)
+	  ,[Caminho_URA]
+	  ,[InsertedDateCtrl]					= TRY_CONVERT(DATETIME,LEFT([InsertedDateCtrl],23),120)						
+  INTO #BASE
+  FROM [dbEstudo].[Stage].[StgCallCenter]
+  --TRUNCATE TABLE [Historico].[HistCallCenter]
+   
+   MERGE [Historico].[HistCallCenter] AS DESTINO
+   USING #BASE AS ORIGEM
+   ON ( 
+		DESTINO.ID_Chamada = ORIGEM.ID_Chamada
+		AND DESTINO.Data_Hora_Inicio = ORIGEM. Data_Hora_Inicio
+	   )
+
+	   WHEN NOT MATCHED THEN 
+			INSERT (
+			[ID_Chamada]
+      ,[Numero_Cliente]
+      ,[Nome_Cliente]
+      ,[Data_Hora_Inicio]
+      ,[Hora_Inicio_Fila]
+      ,[Hora_Inicio_Atendimento]
+      ,[Hora_Fim_Chamada]
+      ,[Hora_Fim_Atendimento]
+      ,[Tipo_Atendimento]
+      ,[Duracao_Chamada_Segundos]
+      ,[Tempo_Pos_Atendimento_Segundos]
+      ,[ID_Agente]
+	  ,[Nome_Agente]
+      ,[ID_Supervisor]
+      ,[Nome_Supervisor]
+      ,[Status_Chamada]
+      ,[Canal_Origem]
+      ,[Motivo_Contato]
+      ,[Resolucao_Primeiro_Contato]
+      ,[CSAT]
+	  ,[Caminho_URA]
+	  ,[InsertedDateCtrl]
+	  )
+	  VALUES (
+	   ORIGEM.[ID_Chamada]
+      ,ORIGEM.[Numero_Cliente]
+      ,ORIGEM.[Nome_Cliente]
+      ,ORIGEM.[Data_Hora_Inicio]
+      ,ORIGEM.[Hora_Inicio_Fila]
+      ,ORIGEM.[Hora_Inicio_Atendimento]
+      ,ORIGEM.[Hora_Fim_Chamada]
+      ,ORIGEM.[Hora_Fim_Atendimento]
+      ,ORIGEM.[Tipo_Atendimento]
+      ,ORIGEM.[Duracao_Chamada_Segundos]
+      ,ORIGEM.[Tempo_Pos_Atendimento_Segundos]
+      ,ORIGEM.[ID_Agente]
+	  ,ORIGEM.[Nome_Agente]
+      ,ORIGEM.[ID_Supervisor]
+      ,ORIGEM.[Nome_Supervisor]
+      ,ORIGEM.[Status_Chamada]
+      ,ORIGEM.[Canal_Origem]
+      ,ORIGEM.[Motivo_Contato]
+      ,ORIGEM.[Resolucao_Primeiro_Contato]
+      ,ORIGEM.[CSAT]
+	  ,ORIGEM.[Caminho_URA]
+	  ,ORIGEM.[InsertedDateCtrl]
+	  );
