@@ -1,0 +1,19 @@
+CREATE TABLE [dbEstudo].[DataMart].[FatoCallCenter]
+(
+	 Data								DATE
+	,IdCliente							INT
+	,IdAtendimento						INT
+	,IdAgente							INT
+	,IdSupervisor						INT
+	,IdStatus							INT
+	,IdCanalOrigem						INT
+	,IdMotivo							INT
+	,IdCaminhoURA						INT
+	,Resolucao_Primeiro_Contato			INT
+	,CSAT								INT
+	,Tempo_Pos_Atendimento_Segundos		INT
+	,Duracao_Chamada_Segundos			INT
+	,TempoAtendimento					INT
+	,Tempo_Espera						INT
+	,QTD_Chamada						INT
+);
