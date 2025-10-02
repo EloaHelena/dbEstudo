@@ -1,0 +1,22 @@
+-- TRUNCATE TABLE [dbEstudo].[DataMart].[DimMotivo]
+DROP TABLE IF EXISTS #BASE
+SELECT DISTINCT
+	A.[Motivo_Contato]
+INTO #BASE
+FROM [dbEstudo].[Historico].[HistCallCenter] A
+WHERE A.[Motivo_Contato] IS NOT NULL
+
+	MERGE [dbEstudo].[DataMart].[DimMotivo] AS DESTINO
+	USING #BASE AS ORIGEM
+	ON(
+		DESTINO.[Motivo_Contato] = ORIGEM.[Motivo_Contato]
+		)
+
+	WHEN NOT MATCHED THEN
+
+		INSERT(
+				[Motivo_Contato]
+				)
+		VALUES(
+				ORIGEM.[Motivo_Contato]
+				);
