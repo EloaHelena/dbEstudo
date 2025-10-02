@@ -1,0 +1,23 @@
+DROP TABLE IF EXISTS #BASE
+SELECT DISTINCT 
+	A.[ID_Supervisor]
+   ,A.[Nome_Supervisor]
+INTO #BASE
+FROM  [dbEstudo].[Historico].[HistCallCenter] A
+
+	MERGE [dbEstudo].[DataMart].[DimSupervisor] AS DESTINO
+	USING #BASE AS ORIGEM
+	ON(
+		DESTINO.[ID_Supervisor] = ORIGEM.[ID_Supervisor]		
+		)
+
+	WHEN NOT MATCHED THEN
+
+		INSERT(
+			[ID_Supervisor]
+			,[Nome_Supervisor]
+			)
+	VALUES(
+			ORIGEM.[ID_Supervisor]
+			,ORIGEM.[Nome_Supervisor]
+			);
