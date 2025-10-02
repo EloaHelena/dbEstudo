@@ -1,0 +1,31 @@
+--drop table [dbEstudo].[Historico].[HistCallCenter];
+
+
+CREATE TABLE [dbEstudo].[Historico].[HistCallCenter]
+(
+		[ID_Chamada]				   		VARCHAR(20)
+      ,[Numero_Cliente]						VARCHAR(25)
+      ,[Nome_Cliente]						VARCHAR(40)
+      ,[Data_Hora_Inicio]					DATETIME
+      ,[Hora_Inicio_Fila]					DATETIME
+	  ,[Hora_Inicio_Atendimento]			DATETIME
+      ,[Hora_Fim_Chamada]					DATETIME
+      ,[Hora_Fim_Atendimento]				DATETIME
+	  ,[Tipo_Atendimento]					VARCHAR(15)
+      ,[Duracao_Chamada_Segundos]			INT
+	  ,[Tempo_Pos_Atendimento_Segundos]		INT	
+	  ,[ID_Agente]							VARCHAR(10)
+	  ,[Nome_Agente]						VARCHAR(10)
+      ,[ID_Supervisor]						VARCHAR(15)
+      ,[Nome_Supervisor]					VARCHAR(20)
+      ,[Status_Chamada]						VARCHAR(30)
+      ,[Canal_Origem]						VARCHAR(30)
+      ,[Motivo_Contato]						VARCHAR(40)
+      ,[Resolucao_Primeiro_Contato]			VARCHAR(90)
+      ,[CSAT]								INT
+	  ,[Caminho_URA]						VARCHAR(40)
+	   ,[InsertedDateCtrl]					DATETIME
+);
+	
+
+		
