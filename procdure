@@ -1,0 +1,7 @@
+-- Lê o CSV e importa os dados na tabela.
+-- A Stg precisa estar criada para fincionar!
+
+EXEC dbo.sp_BulkInsertCSV 
+    @TabelaDestino = '[Stage].[StgCallCenter]', 
+    @CaminhoArquivo = 'C:\Users\eloah\OneDrive\Documentos\dbEstudo\dados_callcenter_ontem_e_hoje.csv',
+    @Separador = ',';
