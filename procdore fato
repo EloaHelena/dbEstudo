@@ -1,0 +1,92 @@
+DROP TABLE IF EXISTS #BASE
+SELECT DISTINCT
+		 [Data]									= CONVERT(DATE,A.Data_Hora_Inicio)
+		,[IdCliente]								= ISNULL(E.[IDCliente],-1)						
+		,[IdAtendimento]							= ISNULL(C.[IdAtendimento],-1)
+		,[IdAgente]									= ISNULL(B.[IdAgente],-1)
+		,[IdSupervisor]								= ISNULL(H.[ID],-1)
+		,[IdStatus]									= ISNULL(G.[ID],-1)
+		,[IdCanalOrigem]							= ISNULL(D.[ID],-1)
+		,[IdMotivo]									= ISNULL(F.[ID],-1)
+		,[IdCaminhoURA]								= ISNULL(I.[Id],-1)
+		,[Resolucao_Primeiro_Contato]				= CASE 
+															WHEN [Resolucao_Primeiro_Contato] = 'TRUE' THEN 1       -- verdadeiro
+															WHEN [Resolucao_Primeiro_Contato] = 'FALSE' THEN 0       -- falso
+															ELSE -1                        -- qualquer outro caso
+														END 
+		,[CSAT]										= ISNULL(A.[CSAT],-1)
+		,[Tempo_Pos_Atendimento_Segundos]			= SUM(A.[Tempo_Pos_Atendimento_Segundos])
+		,[Duracao_Chamada_Segundos]					= SUM(A.[Duracao_Chamada_Segundos]) -- esse é o tempo falado do agente para cada ligacão
+		,[TempoAtendimento]							= SUM(DATEDIFF(SECOND, [Hora_Inicio_Atendimento], [Hora_Fim_Atendimento])) 
+		,[Tempo_Espera]								= SUM(DATEDIFF(SECOND, [Hora_Inicio_Fila], [Hora_Inicio_Atendimento]) )
+		,[QTD_Chamada]								= COUNT(a.[ID_Chamada]) 
+INTO #BASE
+FROM [dbEstudo].[Historico].[HistCallCenter] A
+LEFT JOIN [DataMart].[DimAgente]		AS B ON A.Nome_Agente			= B.Nome_Agente  			--AND B.Nome_Agente		IS NOT NULL
+LEFT JOIN [DataMart].[DimAtendimento]	AS C ON A.Tipo_Atendimento		= C.Tipo_Atendimento		--AND C.Tipo_Atendimento	IS NOT NULL
+LEFT JOIN [DataMart].[DimCanal]			AS D ON A.Canal_Origem			= D.Canal_Origem			--AND D.Canal_Origem		IS NOT NULL
+LEFT JOIN [DataMart].[DimCliente]		AS E ON A.Nome_Cliente			= E.Nome_Cliente			--AND E.Nome_Cliente		IS NOT NULL
+LEFT JOIN [DataMart].[DimMotivo]		AS F ON A.Motivo_Contato		= F.Motivo_Contato			--AND F.Motivo_Contato	IS NOT NULL
+LEFT JOIN [DataMart].[DimStatus]		AS G ON A.Status_Chamada		= G.Status_Chamada			--AND G.Status_Chamada	IS NOT NULL
+LEFT JOIN [DataMart].[DimSupervisor]	AS H ON A.Nome_Supervisor		= H.Nome_Supervisor			--AND H.Nome_Supervisor	IS NOT NULL
+LEFT JOIN [DataMart].[DimCaminhoURA]	AS I ON A.Caminho_URA			= I.Caminho_URA				--AND I.Caminho_URA		IS NOT NULL
+GROUP BY
+	 CONVERT(DATE,A.Data_Hora_Inicio)
+	,ISNULL(E.[IDCliente],-1)						
+	,ISNULL(C.[IdAtendimento],-1)
+	,ISNULL(B.[IdAgente],-1)
+	,ISNULL(H.[ID],-1)
+	,ISNULL(G.[ID],-1)
+	,ISNULL(D.[ID],-1)
+	,ISNULL(F.[ID],-1)
+	,ISNULL(I.[Id],-1)
+	,CASE 
+ 		WHEN [Resolucao_Primeiro_Contato] = 'TRUE' THEN 1       -- verdadeiro
+ 		WHEN [Resolucao_Primeiro_Contato] = 'FALSE' THEN 0       -- falso
+ 		ELSE -1                        -- qualquer outro caso
+	 END 
+	,ISNULL(A.[CSAT],-1)
+
+	MERGE [dbEstudo].[DataMart].[FatoCallCenter] AS DESTINO
+	USING #BASE AS ORIGEM
+	ON (
+		DESTINO.[QTD_Chamada] = ORIGEM.[QTD_Chamada]
+		)
+	WHEN NOT MATCHED THEN
+
+	INSERT(
+			 [Data]							
+			,[IdCliente]						
+			,[IdAtendimento]					
+			,[IdAgente]						
+			,[IdSupervisor]					
+			,[IdStatus]						
+			,[IdCanalOrigem]					
+			,[IdMotivo]						
+			,[IdCaminhoURA]					
+			,[Resolucao_Primeiro_Contato]									
+			,[CSAT]							
+			,[Tempo_Pos_Atendimento_Segundos]	
+			,[Duracao_Chamada_Segundos]		
+			,[TempoAtendimento]				
+			,[Tempo_Espera]					
+			,[QTD_Chamada]
+			)
+	VALUES(
+			 ORIGEM.[Data]							
+			,ORIGEM.[IdCliente]						
+			,ORIGEM.[IdAtendimento]					
+			,ORIGEM.[IdAgente]						
+			,ORIGEM.[IdSupervisor]					
+			,ORIGEM.[IdStatus]						
+			,ORIGEM.[IdCanalOrigem]					
+			,ORIGEM.[IdMotivo]						
+			,ORIGEM.[IdCaminhoURA]					
+			,ORIGEM.[Resolucao_Primeiro_Contato]									
+			,ORIGEM.[CSAT]							
+			,ORIGEM.[Tempo_Pos_Atendimento_Segundos]	
+			,ORIGEM.[Duracao_Chamada_Segundos]		
+			,ORIGEM.[TempoAtendimento]				
+			,ORIGEM.[Tempo_Espera]					
+			,ORIGEM.[QTD_Chamada]			
+			);
