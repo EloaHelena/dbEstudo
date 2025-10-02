@@ -1,0 +1,19 @@
+DROP TABLE IF EXISTS #BASE
+SELECT DISTINCT
+	A.[Status_Chamada]
+INTO #BASE
+FROM [dbEstudo].[Historico].[HistCallCenter] A
+
+MERGE [dbEstudo].[DataMart].[DimStatus] AS DESTINO
+USING #BASE AS ORIGEM
+	ON(
+		DESTINO.[Status_Chamada] = ORIGEM.[Status_Chamada]
+		)
+	WHEN NOT MATCHED THEN
+
+		INSERT(
+				[Status_Chamada]
+				)
+		VALUES(
+				ORIGEM.[Status_Chamada]
+				);
