@@ -1,0 +1,28 @@
+TRUNCATE TABLE [dbEstudo].[Historico].[HistCallCenter]
+
+INSERT INTO [dbEstudo].[Historico].[HistCallCenter]
+
+SELECT 
+	[ID_Chamada]							
+      ,[Numero_Cliente]						
+      ,[Nome_Cliente]
+      ,[Data_Hora_Inicio]					= TRY_CONVERT (DATETIME,[Data_Hora_Inicio],120)
+      ,[Hora_Inicio_Fila]					= TRY_CONVERT (DATETIME,[Hora_Inicio_Fila],120)
+	  ,[Hora_Inicio_Atendimento]			= TRY_CONVERT (DATETIME,[Hora_Inicio_Atendimento],120)
+      ,[Hora_Fim_Chamada]					= TRY_CONVERT (DATETIME,[Hora_Fim_Chamada],120)
+      ,[Hora_Fim_Atendimento]				= TRY_CONVERT (DATETIME,[Hora_Fim_Atendimento],120)
+	  ,[Tipo_Atendimento]					
+      ,[Duracao_Chamada_Segundos]			= CONVERT (INT,[Duracao_Chamada_Segundos])
+	  ,[Tempo_Pos_Atendimento_Segundos]		= CONVERT(INT,CONVERT (FLOAT,[Tempo_Pos_Atendimento_Segundos]))	
+	  ,[ID_Agente]
+	  ,[Nome_Agente]				
+      ,[ID_Supervisor]						
+      ,[Nome_Supervisor]					
+      ,[Status_Chamada]						
+      ,[Canal_Origem]						
+      ,[Motivo_Contato]						
+      ,[Resolucao_Primeiro_Contato]			
+      ,[CSAT]					
+	  ,[Caminho_URA] 
+	   [InsertedDateCtrl]	
+  FROM [dbEstudo].[Stage].[StgCallCenter]
