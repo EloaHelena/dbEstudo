@@ -1,0 +1,7 @@
+
+CREATE TABLE [DataMart].[DimMotivo]
+
+(
+    [ID]INT IDENTITY(1,1) PRIMARY KEY,
+    [Motivo_Contato] VARCHAR(MAX) 
+);
