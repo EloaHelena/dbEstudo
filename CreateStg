@@ -1,0 +1,30 @@
+
+
+
+ CREATE TABLE [dbEstudo].[Stage].[StgCallCenter] 
+ (
+    [ID_Chamada] VARCHAR(MAX),
+    [Numero_Cliente] VARCHAR(MAX),
+    [Nome_Cliente] VARCHAR(MAX),
+    [Data_Hora_Inicio] VARCHAR(MAX),
+    [Hora_Inicio_Fila] VARCHAR(MAX),
+    [Hora_Inicio_Atendimento] VARCHAR(MAX),
+    [Hora_Fim_Chamada] VARCHAR(MAX),
+    [Hora_Fim_Atendimento] VARCHAR(MAX),
+    [Tipo_Atendimento] VARCHAR(MAX),
+    [Duracao_Chamada_Segundos] VARCHAR(MAX),
+    [Tempo_Pos_Atendimento_Segundos] VARCHAR(MAX),
+    [ID_Agente] VARCHAR(MAX),       -- Corrigi aqui: antes você tinha ID_Agente,Nome_Agente na mesma coluna
+    [Nome_Agente] VARCHAR(MAX),
+    [ID_Supervisor] VARCHAR(MAX),
+    [Nome_Supervisor] VARCHAR(MAX),
+    [Status_Chamada] VARCHAR(MAX),
+    [Canal_Origem] VARCHAR(MAX),
+    [Motivo_Contato] VARCHAR(MAX),
+    [Resolucao_Primeiro_Contato] VARCHAR(MAX),
+    [CSAT] VARCHAR(MAX),
+	[Caminho_URA] VARCHAR (MAX),
+	[InsertedDateCtrl]	VARCHAR(MAX)
+ 
+);
+
